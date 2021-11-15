@@ -48,4 +48,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:3.0.2'
+
+    //Collapsing toolbar
+    implementation "com.android.support:support-core-utils:28.0.0"
 }
