@@ -1,6 +1,9 @@
 package com.openclassrooms.entrevoisins.ui.neighbour_list;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Intent;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,8 +34,7 @@ public class MyNeighbourRecyclerViewAdapter extends RecyclerView.Adapter<MyNeigh
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_neighbour, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_neighbour, parent, false);
         return new ViewHolder(view);
     }
 
@@ -44,6 +46,16 @@ public class MyNeighbourRecyclerViewAdapter extends RecyclerView.Adapter<MyNeigh
                 .load(neighbour.getAvatarUrl())
                 .apply(RequestOptions.circleCropTransform())
                 .into(holder.mNeighbourAvatar);
+
+        // Starting listDetailNeighbourActivity when item is clicked
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(holder.itemView.getContext(), ListDetailNeighbourActivity.class);
+                intent.putExtra("Selected Neighbour", mNeighbours.get(position));
+                holder.itemView.getContext().startActivity(intent);
+            }
+        });
 
         holder.mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
