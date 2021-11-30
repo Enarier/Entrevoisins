@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".ui.neighbour_list.ListDetailNeighbourActivity"
     tools:showIn="@layout/activity_list_detail_neighbour">
@@ -16,7 +17,6 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
             app:cardCornerRadius="10dp"
             app:cardMaxElevation="2dp">
 
@@ -28,10 +28,9 @@
                     android:id="@+id/textViewName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="8dp"
+                    android:padding="16dp"
                     android:textColor="@android:color/black"
                     android:textSize="20sp"
-                    android:textStyle="bold"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
@@ -42,14 +41,17 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_below="@id/textViewName"
+                    android:padding="16dp"
+                    android:scaleType="centerInside"
                     app:layout_constraintLeft_toLeftOf="@id/textViewName"
-                    app:layout_constraintTop_toBottomOf="@id/textViewName" />
+                    app:layout_constraintTop_toBottomOf="@id/textViewName"
+                    app:srcCompat="@drawable/ic_location" />
 
                 <TextView
                     android:id="@+id/textViewAddress"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:padding="15dp"
+                    android:padding="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/imageViewGeoLocation"
                     app:layout_constraintTop_toBottomOf="@+id/textViewName" />
@@ -59,15 +61,18 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
 
+                    android:padding="16dp"
+                    android:scaleType="centerInside"
                     app:layout_constraintLeft_toLeftOf="@id/imageViewGeoLocation"
-                    app:layout_constraintTop_toBottomOf="@id/imageViewGeoLocation" />
+                    app:layout_constraintTop_toBottomOf="@id/imageViewGeoLocation"
+                    app:srcCompat="@drawable/ic_phone" />
 
                 <TextView
                     android:id="@+id/textViewPhone"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/textViewAddress"
-                    android:padding="15dp"
+                    android:padding="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/imageViewPhone"
                     app:layout_constraintTop_toBottomOf="@+id/textViewAddress" />
@@ -77,14 +82,18 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_below="@id/imageViewPhone"
+                    android:padding="16dp"
+                    android:scaleType="centerInside"
                     app:layout_constraintStart_toStartOf="@+id/imageViewPhone"
-                    app:layout_constraintTop_toBottomOf="@+id/imageViewPhone" />
+                    app:layout_constraintTop_toBottomOf="@+id/imageViewPhone"
+                    app:srcCompat="@drawable/ic_language" />
 
                 <TextView
                     android:id="@+id/textViewWebsite"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:padding="15dp"
+                    android:padding="16dp"
+                    android:text="www.facebook.fr/caroline"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/imageViewWebsite"
                     app:layout_constraintTop_toBottomOf="@+id/textViewPhone" />
@@ -95,8 +104,7 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -107,14 +115,16 @@
                     android:id="@+id/textView3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="A propos de moi"
                     android:textColor="@android:color/black"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/textViewAboutMe"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:padding="16dp" />
 
             </LinearLayout>
 

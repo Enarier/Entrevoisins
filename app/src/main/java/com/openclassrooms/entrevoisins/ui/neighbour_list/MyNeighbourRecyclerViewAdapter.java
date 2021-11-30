@@ -2,6 +2,7 @@ package com.openclassrooms.entrevoisins.ui.neighbour_list;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
@@ -52,7 +53,7 @@ public class MyNeighbourRecyclerViewAdapter extends RecyclerView.Adapter<MyNeigh
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(holder.itemView.getContext(), ListDetailNeighbourActivity.class);
-                intent.putExtra("Selected Neighbour", mNeighbours.get(position));
+                intent.putExtra("SelectedNeighbour", neighbour);
                 holder.itemView.getContext().startActivity(intent);
             }
         });

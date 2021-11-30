@@ -28,7 +28,18 @@ public interface NeighbourApiService {
      */
     void createNeighbour(Neighbour neighbour);
 
-    // add and remove from favorite
-    boolean setFavorite(Neighbour neighbour);
+    /**
+     * Check if a neighbour exists in the neighboursFavorite List
+     */
+    boolean doesExistFavorite(Neighbour neighbour);
+
+    /**
+     * Add and remove neighbour in the neighboursFavorite List
+     */
+    void addFavorite(Neighbour neighbour);
+
+    void deleteFavorite(Neighbour neighbour);
+
+
 
 }
