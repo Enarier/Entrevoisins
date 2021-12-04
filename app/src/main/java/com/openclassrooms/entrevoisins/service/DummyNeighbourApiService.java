@@ -11,7 +11,8 @@ import java.util.List;
 public class DummyNeighbourApiService implements  NeighbourApiService {
 
     private List<Neighbour> neighbours = DummyNeighbourGenerator.generateNeighbours();
-    private List<Neighbour> neighboursFavorite = new ArrayList<>();
+
+    private List<Neighbour> mNeighbourFavorite = new ArrayList<>();
 
     /**
      * {@inheritDoc}
@@ -19,6 +20,10 @@ public class DummyNeighbourApiService implements  NeighbourApiService {
     @Override
     public List<Neighbour> getNeighbours() {
         return neighbours;
+    }
+
+    public List<Neighbour> getNeighbourFavorite() {
+        return mNeighbourFavorite;
     }
 
     /**
@@ -40,24 +45,22 @@ public class DummyNeighbourApiService implements  NeighbourApiService {
 
     /**
      * Check if a neighbour exists in the neighboursFavorite List
-     * Add and remove neighbour
+     * Add and remove neighbour inside neighboursFavorite List
      */
 
     public boolean doesExistFavorite(Neighbour neighbour) {
-        return neighboursFavorite.contains(neighbour);
+        return mNeighbourFavorite.contains(neighbour);
     }
 
     @Override
     public void addFavorite(Neighbour neighbour) {
-        if (doesExistFavorite(neighbour)) {
-            neighboursFavorite.add(neighbour);
-        }
+        mNeighbourFavorite.add(neighbour);
     }
 
     @Override
     public void deleteFavorite(Neighbour neighbour) {
         if (doesExistFavorite(neighbour)) {
-            neighboursFavorite.remove(neighbour);
+            mNeighbourFavorite.remove(neighbour);
         }
     }
 

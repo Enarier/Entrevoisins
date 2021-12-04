@@ -3,10 +3,13 @@ package com.openclassrooms.entrevoisins.ui.neighbour_list;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
+import android.os.PersistableBundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -41,14 +44,13 @@ public class ListDetailNeighbourActivity  extends AppCompatActivity {
     TextView mTextViewAboutMe;
     @BindView(R.id.floatingActionBtn)
     FloatingActionButton mFloatingActionButton;
+    @BindView(R.id.toolBarArrow)
+    Toolbar mToolbar;
 
-
-    private NeighbourApiService mApiService;
-
-    private List<Neighbour> mNeighbourList;
-    private List<Neighbour> mNeighbourFavoriteList;
+    private NeighbourApiService mApiService = DI.getNeighbourApiService();
     private Neighbour mNeighbour;
 
+    private int imageResStar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,22 +59,19 @@ public class ListDetailNeighbourActivity  extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        mApiService = DI.getNeighbourApiService();
-        mNeighbourList = mApiService.getNeighbours();
-        mNeighbourFavoriteList = new ArrayList<>();
-
         init();
 
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mApiService.doesExistFavorite(mNeighbour)) {
-                    mApiService.deleteFavorite(mNeighbour);
-                    mFloatingActionButton.setImageResource(R.drawable.ic_star_white_24dp);
-                } else {
-                    mApiService.addFavorite(mNeighbour);
-                    mFloatingActionButton.setImageResource(R.drawable.ic_star_yellow_24dp);
-                }
+                fabClick();
+            }
+        });
+
+        mToolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 
@@ -92,8 +91,42 @@ public class ListDetailNeighbourActivity  extends AppCompatActivity {
                     .load(mNeighbour.getAvatarUrl())
                     .centerCrop()
                     .into(mImageViewAvatar);
-
         }
     }
 
+    private void fabClick() {
+        if (mApiService.doesExistFavorite(mNeighbour)) {
+            mApiService.deleteFavorite(mNeighbour);
+            mFloatingActionButton.setImageResource(R.drawable.ic_star_white_24dp);
+        } else {
+            mApiService.addFavorite(mNeighbour);
+            mFloatingActionButton.setImageResource(R.drawable.ic_star_yellow_24dp);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+
+        if (mFloatingActionButton.isSelected()) {
+            savedInstanceState.putInt("FavoriteButtonClicked", R.drawable.ic_star_yellow_24dp);
+        } else {
+            savedInstanceState.putInt("FavoriteButtonUnclicked", R.drawable.ic_star_white_24dp);
+        }
+
+    }
+
+    @Override
+    public void onRestoreInstanceState(@Nullable Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        if (mFloatingActionButton.isSelected()) {
+            imageResStar = savedInstanceState.getInt("FavoriteButtonClicked");
+            mFloatingActionButton.setImageResource(imageResStar);
+        } else {
+            imageResStar = savedInstanceState.getInt("FavoriteButtonUnclicked");
+            mFloatingActionButton.setImageResource(imageResStar);
+        }
+    }
 }
+
