@@ -50,8 +50,6 @@ public class ListDetailNeighbourActivity  extends AppCompatActivity {
     private NeighbourApiService mApiService = DI.getNeighbourApiService();
     private Neighbour mNeighbour;
 
-    private int imageResStar;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,16 +66,19 @@ public class ListDetailNeighbourActivity  extends AppCompatActivity {
             }
         });
 
-        mToolbar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        if (mApiService.doesExistFavorite(mNeighbour)) {
+            mFloatingActionButton.setImageResource(R.drawable.ic_star_yellow_24dp);
+        } else {
+            mFloatingActionButton.setImageResource(R.drawable.ic_star_white_24dp);
+        }
 
     }
 
     private void init() {
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
         if (getIntent().hasExtra("SelectedNeighbour")) {
             mNeighbour = getIntent().getParcelableExtra("SelectedNeighbour");
 
@@ -104,29 +105,5 @@ public class ListDetailNeighbourActivity  extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-
-        if (mFloatingActionButton.isSelected()) {
-            savedInstanceState.putInt("FavoriteButtonClicked", R.drawable.ic_star_yellow_24dp);
-        } else {
-            savedInstanceState.putInt("FavoriteButtonUnclicked", R.drawable.ic_star_white_24dp);
-        }
-
-    }
-
-    @Override
-    public void onRestoreInstanceState(@Nullable Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        if (mFloatingActionButton.isSelected()) {
-            imageResStar = savedInstanceState.getInt("FavoriteButtonClicked");
-            mFloatingActionButton.setImageResource(imageResStar);
-        } else {
-            imageResStar = savedInstanceState.getInt("FavoriteButtonUnclicked");
-            mFloatingActionButton.setImageResource(imageResStar);
-        }
-    }
 }
 

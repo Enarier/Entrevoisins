@@ -27,7 +27,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.neighbour_list.ListDetailNeighbourActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:parentActivityName=".ui.neighbour_list.ListNeighbourActivity"/>
     </application>
 
 </manifest>
