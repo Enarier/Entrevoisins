@@ -22,11 +22,11 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.neighbour_list.ListDetailNeighbourActivity"
+        <activity
+            android:name=".ui.neighbour_list.ListDetailNeighbourActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:parentActivityName=".ui.neighbour_list.ListNeighbourActivity"/>
     </application>

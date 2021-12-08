@@ -1,12 +1,14 @@
 
 package com.openclassrooms.entrevoisins.neighbour_list;
 
-import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.openclassrooms.entrevoisins.R;
+import com.openclassrooms.entrevoisins.di.DI;
+import com.openclassrooms.entrevoisins.model.Neighbour;
+import com.openclassrooms.entrevoisins.service.NeighbourApiService;
 import com.openclassrooms.entrevoisins.ui.neighbour_list.ListNeighbourActivity;
 import com.openclassrooms.entrevoisins.utils.DeleteViewAction;
 
@@ -16,12 +18,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.Espresso.pressBack;
+import static androidx.test.espresso.action.ViewActions.click;
+
+import static androidx.test.espresso.action.ViewActions.swipeRight;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
 import static androidx.test.espresso.matcher.ViewMatchers.hasMinimumChildCount;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static com.openclassrooms.entrevoisins.utils.RecyclerViewItemCountAssertion.withItemCount;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
-
 
 
 /**
@@ -32,6 +43,8 @@ public class NeighboursListTest {
 
     // This is fixed
     private static int ITEMS_COUNT = 12;
+
+    private NeighbourApiService mApiService = DI.getNeighbourApiService();
 
     private ListNeighbourActivity mActivity;
 
@@ -46,7 +59,7 @@ public class NeighboursListTest {
     }
 
     /**
-     * We ensure that our recyclerview is displaying at least on item
+     * We ensure that our recyclerview is displaying at least one item
      */
     @Test
     public void myNeighboursList_shouldNotBeEmpty() {
@@ -64,8 +77,78 @@ public class NeighboursListTest {
         onView(ViewMatchers.withId(R.id.list_neighbours)).check(withItemCount(ITEMS_COUNT));
         // When perform a click on a delete icon
         onView(ViewMatchers.withId(R.id.list_neighbours))
-                .perform(RecyclerViewActions.actionOnItemAtPosition(1, new DeleteViewAction()));
+                .perform(actionOnItemAtPosition(1, new DeleteViewAction()));
         // Then : the number of element is 11
         onView(ViewMatchers.withId(R.id.list_neighbours)).check(withItemCount(ITEMS_COUNT-1));
     }
+
+    /**
+     * Check recyclerview is in view and click on 9th neighbour in the list
+     * Check that the selected neighbour appears with right infos
+     * Press back and check if user comes back to recyclerview
+     */
+    @Test
+    public void selectListItem_isDetailActivityVisibleWithRightData_PressBack() {
+        onView(withId(R.id.list_neighbours)).check(matches(isDisplayed()));
+        onView(withId(R.id.list_neighbours)).perform(actionOnItemAtPosition(8, click()));
+        //Check infos
+        onView(withId(R.id.textViewName)).check(matches(withText(mApiService.getNeighbours().get(8).getName())));
+        onView(withId(R.id.textViewAddress)).check(matches(withText(mApiService.getNeighbours().get(8).getAddress())));
+        onView(withId(R.id.textViewPhone)).check(matches(withText(mApiService.getNeighbours().get(8).getPhoneNumber())));
+        onView(withId(R.id.textViewAboutMe)).check(matches(withText(mApiService.getNeighbours().get(8).getAboutMe())));
+//        onView(withId(R.id.imageViewAvatar)).check(matches(withText(NEIGHBOUR_IN_TEST.getAvatarUrl())));
+        
+        pressBack();
+        onView(withId(R.id.list_neighbours)).check(matches(isDisplayed()));
+    }
+
+    /**
+     *  Check if the favorite button displays on screen and changes it's color when it is clicked
+     */
+    @Test
+    public void favButtonColorChange() {
+        onView(withId(R.id.list_neighbours)).check(matches(isDisplayed()));
+        onView(withId(R.id.list_neighbours)).perform(actionOnItemAtPosition(8, click()));
+        onView(withId(R.id.floatingActionBtn)).check(matches(isDisplayed()));
+
+        //Click favorite(star)button and check if it becomes yellow
+        onView(withId(R.id.floatingActionBtn)).perform(click());
+        onView(withId(R.id.floatingActionBtn)).check(matches(withTagValue(equalTo(R.drawable.ic_star_yellow_24dp))));
+    }
+
+    /**
+     * Check that Favorite button clicked neighbour is added to favorite tab
+     * Swipe screen to right to see favorite tab
+     * Click on neighbor(in Favorite tab) to make sure that user can navigate to detail activity by this way also
+     */
+    @Test
+    public void favoriteTab_containsFavButtonClickedNeighbour_navigateToDetailActivity () {
+        onView(withId(R.id.list_neighbours)).check(matches(isDisplayed()));
+        onView(withId(R.id.list_neighbours)).perform(actionOnItemAtPosition(8, click()));
+        onView(withId(R.id.floatingActionBtn)).perform(click());
+
+        pressBack();
+        onView(withId(R.id.list_neighbours)).perform(swipeRight());
+
+        onView(ViewMatchers.withId(R.id.list_favorite_neighbours)).check(matches(hasMinimumChildCount(1)));
+//        onView(withId(R.id.list_favorite_neighbours)).perform(actionOnItemAtPosition(0, click()));
+
+//        onView(withId(R.id.textViewName)).check(matches(withText(mApiService.getNeighbourFavorite().get(0).getName())));
+//        onView(withId(R.id.textViewAddress)).check(matches(withText(mApiService.getNeighbourFavorite().get(0).getAddress())));
+//        onView(withId(R.id.textViewPhone)).check(matches(withText(mApiService.getNeighbourFavorite().get(0).getPhoneNumber())));
+//        onView(withId(R.id.textViewAboutMe)).check(matches(withText(mApiService.getNeighbourFavorite().get(0).getAboutMe())));
+//        onView(withId(R.id.imageViewAvatar)).check(matches(withText(mApiService.getNeighbourFavorite().get(0).getAvatarUrl())));
+
+    }
 }
+
+
+
+
+
+
+
+
+
+
+

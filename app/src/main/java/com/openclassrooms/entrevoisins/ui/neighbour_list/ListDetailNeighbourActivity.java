@@ -59,6 +59,8 @@ public class ListDetailNeighbourActivity  extends AppCompatActivity {
 
         init();
 
+        mFloatingActionButton.setTag(R.drawable.ic_star_yellow_24dp);
+
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,6 +101,7 @@ public class ListDetailNeighbourActivity  extends AppCompatActivity {
         if (mApiService.doesExistFavorite(mNeighbour)) {
             mApiService.deleteFavorite(mNeighbour);
             mFloatingActionButton.setImageResource(R.drawable.ic_star_white_24dp);
+
         } else {
             mApiService.addFavorite(mNeighbour);
             mFloatingActionButton.setImageResource(R.drawable.ic_star_yellow_24dp);
