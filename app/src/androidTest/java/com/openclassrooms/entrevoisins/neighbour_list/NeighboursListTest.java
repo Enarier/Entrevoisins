@@ -21,6 +21,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
 
+import static androidx.test.espresso.action.ViewActions.swipeLeft;
 import static androidx.test.espresso.action.ViewActions.swipeRight;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
@@ -92,12 +93,12 @@ public class NeighboursListTest {
         onView(withId(R.id.list_neighbours)).check(matches(isDisplayed()));
         onView(withId(R.id.list_neighbours)).perform(actionOnItemAtPosition(8, click()));
         //Check infos
+        onView(withId(R.id.neighbourDetailLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.textViewName)).check(matches(withText(mApiService.getNeighbours().get(8).getName())));
         onView(withId(R.id.textViewAddress)).check(matches(withText(mApiService.getNeighbours().get(8).getAddress())));
         onView(withId(R.id.textViewPhone)).check(matches(withText(mApiService.getNeighbours().get(8).getPhoneNumber())));
         onView(withId(R.id.textViewAboutMe)).check(matches(withText(mApiService.getNeighbours().get(8).getAboutMe())));
-//        onView(withId(R.id.imageViewAvatar)).check(matches(withText(NEIGHBOUR_IN_TEST.getAvatarUrl())));
-        
+
         pressBack();
         onView(withId(R.id.list_neighbours)).check(matches(isDisplayed()));
     }
@@ -109,6 +110,7 @@ public class NeighboursListTest {
     public void favButtonColorChange() {
         onView(withId(R.id.list_neighbours)).check(matches(isDisplayed()));
         onView(withId(R.id.list_neighbours)).perform(actionOnItemAtPosition(8, click()));
+        onView(withId(R.id.neighbourDetailLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.floatingActionBtn)).check(matches(isDisplayed()));
 
         //Click favorite(star)button and check if it becomes yellow
@@ -122,23 +124,42 @@ public class NeighboursListTest {
      * Click on neighbor(in Favorite tab) to make sure that user can navigate to detail activity by this way also
      */
     @Test
-    public void favoriteTab_containsFavButtonClickedNeighbour_navigateToDetailActivity () {
+    public void favoriteTabContainsFavButtonClickedNeighbour_navigateToDetailActivity () {
         onView(withId(R.id.list_neighbours)).check(matches(isDisplayed()));
         onView(withId(R.id.list_neighbours)).perform(actionOnItemAtPosition(8, click()));
+        onView(withId(R.id.neighbourDetailLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.floatingActionBtn)).perform(click());
 
         pressBack();
-        onView(withId(R.id.list_neighbours)).perform(swipeRight());
+        onView(withId(R.id.list_neighbours)).perform(swipeLeft());
+
+        onView(withId(R.id.list_favorite_neighbours)).check(matches(hasMinimumChildCount(1)));
+        onView(withId(R.id.list_favorite_neighbours)).perform(actionOnItemAtPosition(0, click()));
+        onView(withId(R.id.neighbourDetailLayout)).check(matches(isDisplayed()));
+    }
+    
+    /**
+     * Click on fav button to remove neighbour from favorite tab
+     * Check if the favorite tab doesn't contain removed neighbour
+     */
+    @Test
+    public void favButtonRemovesNeighbourFromFavoriteTab() {
+        onView(withId(R.id.list_neighbours)).check(matches(isDisplayed()));
+        onView(withId(R.id.list_neighbours)).perform(actionOnItemAtPosition(8, click()));
+        onView(withId(R.id.neighbourDetailLayout)).check(matches(isDisplayed()));
+        onView(withId(R.id.floatingActionBtn)).perform(click());
+
+        pressBack();
+        onView(withId(R.id.list_neighbours)).perform(swipeLeft());
 
         onView(ViewMatchers.withId(R.id.list_favorite_neighbours)).check(matches(hasMinimumChildCount(1)));
-//        onView(withId(R.id.list_favorite_neighbours)).perform(actionOnItemAtPosition(0, click()));
+        onView(withId(R.id.list_favorite_neighbours)).perform(actionOnItemAtPosition(0, click()));
+//        onView(withId(R.id.neighbourDetailLayout)).check(matches(isDisplayed()));
+        onView(withId(R.id.floatingActionBtn)).check(matches(isDisplayed()));
+        onView(withId(R.id.floatingActionBtn)).perform(click());
 
-//        onView(withId(R.id.textViewName)).check(matches(withText(mApiService.getNeighbourFavorite().get(0).getName())));
-//        onView(withId(R.id.textViewAddress)).check(matches(withText(mApiService.getNeighbourFavorite().get(0).getAddress())));
-//        onView(withId(R.id.textViewPhone)).check(matches(withText(mApiService.getNeighbourFavorite().get(0).getPhoneNumber())));
-//        onView(withId(R.id.textViewAboutMe)).check(matches(withText(mApiService.getNeighbourFavorite().get(0).getAboutMe())));
-//        onView(withId(R.id.imageViewAvatar)).check(matches(withText(mApiService.getNeighbourFavorite().get(0).getAvatarUrl())));
-
+        pressBack();
+        onView(ViewMatchers.withId(R.id.list_favorite_neighbours)).check(matches(hasMinimumChildCount(0)));
     }
 }
 
