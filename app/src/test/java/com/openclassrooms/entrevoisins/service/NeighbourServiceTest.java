@@ -53,11 +53,11 @@ public class NeighbourServiceTest {
 
     @Test
     public void deleteNeighbourInFavoriteWithSuccess() {
-        Neighbour neighbourToDelete = service.getNeighbours().get(1);
-        service.addFavorite(neighbourToDelete);
-        assertTrue(service.doesExistFavorite(neighbourToDelete));
-        service.deleteFavorite(neighbourToDelete);
-        assertFalse(service.doesExistFavorite(neighbourToDelete));
+        Neighbour neighbour = service.getNeighbours().get(1);
+        service.addFavorite(neighbour);
+        assertTrue(service.doesExistFavorite(neighbour));
+        service.deleteFavorite(neighbour);
+        assertFalse(service.doesExistFavorite(neighbour));
     }
 
     @Test

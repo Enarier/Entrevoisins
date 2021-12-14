@@ -21,11 +21,14 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
+import butterknife.BindView;
+
 
 public class FavoriteNeighbourFragment extends Fragment {
 
     private NeighbourApiService mApiService;
     private List<Neighbour> mNeighbourList;
+
     private RecyclerView mRecyclerView;
 
     /**
@@ -41,14 +44,17 @@ public class FavoriteNeighbourFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mApiService = DI.getNeighbourApiService();
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_favorite_neighbour_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_neighbour_list, container, false);
         Context context = view.getContext();
         mRecyclerView = (RecyclerView) view;
+        mRecyclerView.setContentDescription("F");
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         return view;

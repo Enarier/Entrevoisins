@@ -1,6 +1,7 @@
 
 package com.openclassrooms.entrevoisins.neighbour_list;
 
+import androidx.test.espresso.ViewAssertion;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -12,6 +13,8 @@ import com.openclassrooms.entrevoisins.service.NeighbourApiService;
 import com.openclassrooms.entrevoisins.ui.neighbour_list.ListNeighbourActivity;
 import com.openclassrooms.entrevoisins.utils.DeleteViewAction;
 
+
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -22,18 +25,24 @@ import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
 
 import static androidx.test.espresso.action.ViewActions.swipeLeft;
-import static androidx.test.espresso.action.ViewActions.swipeRight;
+
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
+
+import static androidx.test.espresso.matcher.ViewMatchers.hasContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.hasMinimumChildCount;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static com.openclassrooms.entrevoisins.utils.RecyclerViewItemCountAssertion.withItemCount;
+import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
+
+import android.view.View;
 
 
 /**
@@ -65,7 +74,7 @@ public class NeighboursListTest {
     @Test
     public void myNeighboursList_shouldNotBeEmpty() {
         // First scroll to the position that needs to be matched and click on it.
-        onView(ViewMatchers.withId(R.id.list_neighbours))
+        onView(allOf(withId(R.id.list_neighbours),withContentDescription("NF")))
                 .check(matches(hasMinimumChildCount(1)));
     }
 
@@ -75,32 +84,40 @@ public class NeighboursListTest {
     @Test
     public void myNeighboursList_deleteAction_shouldRemoveItem() {
         // Given : We remove the element at position 2
-        onView(ViewMatchers.withId(R.id.list_neighbours)).check(withItemCount(ITEMS_COUNT));
+        onView(allOf(withId(R.id.list_neighbours),withContentDescription("NF"))).check(withItemCount(ITEMS_COUNT));
         // When perform a click on a delete icon
-        onView(ViewMatchers.withId(R.id.list_neighbours))
+        onView(allOf(withId(R.id.list_neighbours),withContentDescription("NF")))
                 .perform(actionOnItemAtPosition(1, new DeleteViewAction()));
         // Then : the number of element is 11
-        onView(ViewMatchers.withId(R.id.list_neighbours)).check(withItemCount(ITEMS_COUNT-1));
+        onView(allOf(withId(R.id.list_neighbours),withContentDescription("NF"))).check(withItemCount(ITEMS_COUNT-1));
     }
 
     /**
      * Check recyclerview is in view and click on 9th neighbour in the list
-     * Check that the selected neighbour appears with right infos
-     * Press back and check if user comes back to recyclerview
+     * Check that the detail activity shows up
+     */
+
+    @Test
+    public void selectListItem_DetailActivityShowsUp() {
+        onView(allOf(withId(R.id.list_neighbours),withContentDescription("NF"))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.list_neighbours),withContentDescription("NF"))).perform(actionOnItemAtPosition(8, click()));
+        onView(withId(R.id.neighbourDetailLayout)).check(matches(isDisplayed()));
+    }
+
+    /**
+     * Check recyclerview is in view and click on 9th neighbour in the list
+     * Check that the selected neighbour appears with right info
      */
     @Test
-    public void selectListItem_isDetailActivityVisibleWithRightData_PressBack() {
-        onView(withId(R.id.list_neighbours)).check(matches(isDisplayed()));
-        onView(withId(R.id.list_neighbours)).perform(actionOnItemAtPosition(8, click()));
-        //Check infos
+    public void selectListItem_isDetailActivityVisibleWithRightData() {
+        onView(allOf(withId(R.id.list_neighbours),withContentDescription("NF"))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.list_neighbours),withContentDescription("NF"))).perform(actionOnItemAtPosition(8, click()));
         onView(withId(R.id.neighbourDetailLayout)).check(matches(isDisplayed()));
+        //Check info
         onView(withId(R.id.textViewName)).check(matches(withText(mApiService.getNeighbours().get(8).getName())));
         onView(withId(R.id.textViewAddress)).check(matches(withText(mApiService.getNeighbours().get(8).getAddress())));
         onView(withId(R.id.textViewPhone)).check(matches(withText(mApiService.getNeighbours().get(8).getPhoneNumber())));
         onView(withId(R.id.textViewAboutMe)).check(matches(withText(mApiService.getNeighbours().get(8).getAboutMe())));
-
-        pressBack();
-        onView(withId(R.id.list_neighbours)).check(matches(isDisplayed()));
     }
 
     /**
@@ -108,8 +125,8 @@ public class NeighboursListTest {
      */
     @Test
     public void favButtonColorChange() {
-        onView(withId(R.id.list_neighbours)).check(matches(isDisplayed()));
-        onView(withId(R.id.list_neighbours)).perform(actionOnItemAtPosition(8, click()));
+        onView(allOf(withId(R.id.list_neighbours),withContentDescription("NF"))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.list_neighbours),withContentDescription("NF"))).perform(actionOnItemAtPosition(8, click()));
         onView(withId(R.id.neighbourDetailLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.floatingActionBtn)).check(matches(isDisplayed()));
 
@@ -120,22 +137,22 @@ public class NeighboursListTest {
 
     /**
      * Check that Favorite button clicked neighbour is added to favorite tab
-     * Swipe screen to right to see favorite tab
+     * Swipe screen to see favorite tab
      * Click on neighbor(in Favorite tab) to make sure that user can navigate to detail activity by this way also
      */
     @Test
     public void favoriteTabContainsFavButtonClickedNeighbour_navigateToDetailActivity () {
-        onView(withId(R.id.list_neighbours)).check(matches(isDisplayed()));
-        onView(withId(R.id.list_neighbours)).perform(actionOnItemAtPosition(8, click()));
+        mApiService.getNeighbourFavorite().clear();
+        onView(allOf(withId(R.id.list_neighbours),withContentDescription("NF"))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.list_neighbours),withContentDescription("NF"))).perform(actionOnItemAtPosition(8, click()));
         onView(withId(R.id.neighbourDetailLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.floatingActionBtn)).perform(click());
-
         pressBack();
-        onView(withId(R.id.list_neighbours)).perform(swipeLeft());
-
-        onView(withId(R.id.list_favorite_neighbours)).check(matches(hasMinimumChildCount(1)));
-        onView(withId(R.id.list_favorite_neighbours)).perform(actionOnItemAtPosition(0, click()));
-        onView(withId(R.id.neighbourDetailLayout)).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.list_neighbours),withContentDescription("NF"))).perform(actionOnItemAtPosition(9,click()));
+        onView(withId(R.id.floatingActionBtn)).perform(click());
+        pressBack();
+        onView(withId(R.id.container)).perform(swipeLeft());
+        onView(allOf(withId(R.id.list_neighbours),withContentDescription("F"))).check(matches(hasMinimumChildCount(2)));
     }
     
     /**
@@ -144,24 +161,27 @@ public class NeighboursListTest {
      */
     @Test
     public void favButtonRemovesNeighbourFromFavoriteTab() {
-        onView(withId(R.id.list_neighbours)).check(matches(isDisplayed()));
-        onView(withId(R.id.list_neighbours)).perform(actionOnItemAtPosition(8, click()));
+        mApiService.getNeighbourFavorite().clear();
+        onView(allOf(withId(R.id.list_neighbours),withContentDescription("NF"))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.list_neighbours),withContentDescription("NF"))).perform(actionOnItemAtPosition(8, click()));
         onView(withId(R.id.neighbourDetailLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.floatingActionBtn)).perform(click());
 
         pressBack();
-        onView(withId(R.id.list_neighbours)).perform(swipeLeft());
+        onView((withContentDescription("Favorites"))).perform(click());
+//        onView(withId(R.id.list_neighbours)).perform(swipeLeft());
 
-        onView(ViewMatchers.withId(R.id.list_favorite_neighbours)).check(matches(hasMinimumChildCount(1)));
-        onView(withId(R.id.list_favorite_neighbours)).perform(actionOnItemAtPosition(0, click()));
-//        onView(withId(R.id.neighbourDetailLayout)).check(matches(isDisplayed()));
-        onView(withId(R.id.floatingActionBtn)).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.list_neighbours),withContentDescription("F"))).check(matches(hasMinimumChildCount(1)));
+        onView(allOf(withId(R.id.list_neighbours),withContentDescription("F"))).perform(actionOnItemAtPosition(0, click()));
+        onView(withId(R.id.neighbourDetailLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.floatingActionBtn)).perform(click());
 
         pressBack();
-        onView(ViewMatchers.withId(R.id.list_favorite_neighbours)).check(matches(hasMinimumChildCount(0)));
+        onView(allOf(withId(R.id.list_neighbours),withContentDescription("F"))).check(matches(hasMinimumChildCount(0)));
     }
+
 }
+
 
 
 
