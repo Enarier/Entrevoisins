@@ -66,7 +66,6 @@ public class FavoriteNeighbourFragment extends Fragment {
     public void initList() {
         mNeighbourList= mApiService.getNeighbourFavorite();
         mRecyclerView.setAdapter(new MyNeighbourRecyclerViewAdapter(mNeighbourList));
-
     }
 
     @Override

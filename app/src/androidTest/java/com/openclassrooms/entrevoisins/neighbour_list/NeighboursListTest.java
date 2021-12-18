@@ -169,7 +169,6 @@ public class NeighboursListTest {
 
         pressBack();
         onView((withContentDescription("Favorites"))).perform(click());
-//        onView(withId(R.id.list_neighbours)).perform(swipeLeft());
 
         onView(allOf(withId(R.id.list_neighbours),withContentDescription("F"))).check(matches(hasMinimumChildCount(1)));
         onView(allOf(withId(R.id.list_neighbours),withContentDescription("F"))).perform(actionOnItemAtPosition(0, click()));
